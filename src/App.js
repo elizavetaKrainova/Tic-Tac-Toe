@@ -22,12 +22,12 @@ export default function App() {
 
   const renderCells = Array.from({ length: 9 }).map((_, index) => (
     <button
-      className={`GridButton ${
+      className={`MainGrid__Button ${
         chosenCellsFirstPlayer.includes(index)
-          ? 'blue'
+          ? '--blue'
           : chosenCellsSecondPlayer.includes(index)
-          ? 'red'
-          : 'white'
+          ? '--red'
+          : '--white'
       }`}
       onClick={() => handleClick(index)}
       key={index}
@@ -36,20 +36,7 @@ export default function App() {
 
   return (
     <div className='App'>
-      <div className='MainGrid'>
-        {renderCells}
-        {/* <div>Test</div>
-        <div>Test</div>
-        <div>Test</div>
-
-        <div>Test</div>
-        <div>Test</div>
-        <div>Test</div>
-
-        <div>Test</div>
-        <div>Test</div>
-        <div>Test</div> */}
-      </div>
+      <div className='MainGrid'>{renderCells}</div>
     </div>
   );
 }

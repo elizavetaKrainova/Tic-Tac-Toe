@@ -11,10 +11,18 @@
   grid-template-rows: 50px 50px 50px;
 }
 
-.blue {
+.MainGrid__Button {
+  border-radius: 5px;
+}
+
+.--blue {
   background-color: aquamarine;
 }
 
-.red {
+.--red {
   background-color: pink;
+}
+
+.--white {
+  background-color: white;
 }
