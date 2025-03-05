@@ -1,14 +1,19 @@
 .App {
-  font-family: sans-serif;
   display: flex;
+  font-family: sans-serif;
   justify-content: center;
+}
+
+.GameElements {
+  display: flex;
+  flex-direction: column;
 }
 
 .MainGrid {
   display: grid;
   gap: 5px;
-  grid-template-columns: 50px 50px 50px;
   grid-template-rows: 50px 50px 50px;
+  grid-template-columns: 50px 50px 50px;
 }
 
 .MainGrid__Button {
