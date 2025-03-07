@@ -5,8 +5,9 @@
 }
 
 .GameElements {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  gap: 5px;
+  grid-template-columns: auto;
 }
 
 .MainGrid {
@@ -16,16 +17,48 @@
   grid-template-columns: 50px 50px 50px;
 }
 
-.MainGrid__Button {
+.GameSteps {
+  display: grid;
+  gap: 5px;
+  grid-template-rows: auto;
+  grid-template-columns: 50px 50px 50px;
+}
+
+.GameSteps__Button {
+  background-color: #f8fed4;
+  border-color: #ffe9b8;
+  color: #5a3d2b;
   border-radius: 5px;
 }
 
+.MainGrid__Button {
+  border-color: #ffe9b8;
+  border-radius: 5px;
+}
+
+.RestartButton {
+  background-color: #ffd5bc;
+  border-color: #ffc5bf;
+  border-radius: 5px;
+  color: #5a3d2b;
+  text-transform: uppercase;
+}
+
+.Winner {
+  color: #5a3d2b;
+  text-align: center;
+}
+
 .--blue {
-  background-color: aquamarine;
+  background-color: #cafefb;
+  border-color: #c1f1fd;
+  color: #2a7373;
 }
 
 .--red {
-  background-color: pink;
+  background-color: #ffc1ca;
+  border-color: #ffbdd2;
+  color: #a23e48;
 }
 
 .--white {

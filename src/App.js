@@ -1,21 +1,18 @@
 import { useState, useMemo } from 'react';
+import { getFromLocalStorage, setToLocalStorage } from './mixin';
 import './styles.css';
 
-const row = {
-  display: 'flex',
-};
-
 export default function App() {
-  const [player, setPlayer] = useState(
-    JSON.parse(localStorage.getItem('player')) || 1
-  );
+  // STATE
+  const [player, setPlayer] = useState(getFromLocalStorage('player') || 1);
   const [chosenCellsFirstPlayer, setChosenCellsFirstPlayer] = useState(
-    JSON.parse(localStorage.getItem('chosenCellsFirstPlayer')) || []
+    getFromLocalStorage('chosenCellsFirstPlayer') || []
   );
   const [chosenCellsSecondPlayer, setChosenCellsSecondPlayer] = useState(
-    JSON.parse(localStorage.getItem('chosenCellsSecondPlayer')) || []
+    getFromLocalStorage('chosenCellsSecondPlayer') || []
   );
 
+  // STATIC DATA
   const winningCombinations = [
     [0, 1, 2],
     [3, 4, 5],
@@ -27,6 +24,7 @@ export default function App() {
     [2, 4, 6],
   ];
 
+  // GAME ACTIONS
   const handleClick = (index) => {
     const isFirstPlayer = player === 1;
     const updatedCells = isFirstPlayer
@@ -42,11 +40,11 @@ export default function App() {
     const nextPlayer = isFirstPlayer ? 2 : 1;
     setPlayer(nextPlayer);
 
-    localStorage.setItem(
+    setToLocalStorage(
       isFirstPlayer ? 'chosenCellsFirstPlayer' : 'chosenCellsSecondPlayer',
-      JSON.stringify(updatedCells)
+      updatedCells
     );
-    localStorage.setItem('player', JSON.stringify(nextPlayer));
+    setToLocalStorage('player', nextPlayer);
   };
 
   const restartGame = () => {
@@ -55,6 +53,29 @@ export default function App() {
     localStorage.clear();
   };
 
+  const moveToPreviousStep = () => {
+    const isPlayerTwo = player === 2;
+
+    const setChosenCells = isPlayerTwo
+      ? setChosenCellsFirstPlayer
+      : setChosenCellsSecondPlayer;
+    const nextPlayer = isPlayerTwo ? 1 : 2;
+
+    setChosenCells((prev) => {
+      const updatedCells = [...prev];
+      updatedCells.pop();
+      setToLocalStorage(
+        isPlayerTwo ? 'chosenCellsFirstPlayer' : 'chosenCellsSecondPlayer',
+        updatedCells
+      );
+      return updatedCells;
+    });
+
+    setPlayer(nextPlayer);
+    setToLocalStorage('player', nextPlayer);
+  };
+
+  // RECALCULATED VALUES
   const isRestartDisabled = useMemo(() => {
     return (
       chosenCellsFirstPlayer.length === 0 &&
@@ -72,13 +93,17 @@ export default function App() {
     );
 
     return firstPlayerWins
-      ? 'First Player'
+      ? 'First Player won!'
       : secondPlayerWins
-      ? 'Second Player'
+      ? 'Second Player won!'
       : '';
   }, [chosenCellsFirstPlayer, chosenCellsSecondPlayer]);
 
-  const renderCells = Array.from({ length: 9 }).map((_, index) => (
+  const amountOfSteps =
+    chosenCellsFirstPlayer.length + chosenCellsSecondPlayer.length;
+
+  // INTERFACE ELEMENTS
+  const cells = Array.from({ length: 9 }).map((_, index) => (
     <button
       className={`MainGrid__Button ${
         chosenCellsFirstPlayer.includes(index)
@@ -89,17 +114,46 @@ export default function App() {
       }`}
       onClick={() => handleClick(index)}
       key={index}
-    ></button>
+    >
+      <span className='material-icons'>
+        {chosenCellsFirstPlayer.includes(index)
+          ? 'close'
+          : chosenCellsSecondPlayer.includes(index)
+          ? 'radio_button_unchecked'
+          : ''}
+      </span>
+    </button>
+  ));
+
+  const gameSteps = Array.from({
+    length: amountOfSteps,
+  }).map((_, index) => (
+    <button
+      className='GameSteps__Button'
+      disabled={amountOfSteps - index > 1}
+      onClick={() => moveToPreviousStep()}
+      key={index}
+    >
+      {index}
+    </button>
   ));
 
   return (
     <div className='App'>
       <div className='GameElements'>
-        <div className='MainGrid'>{renderCells}</div>
-        <button onClick={() => restartGame()} disabled={isRestartDisabled}>
+        <div className='MainGrid'>{cells}</div>
+
+        <button
+          className='RestartButton'
+          onClick={() => restartGame()}
+          disabled={isRestartDisabled}
+        >
           Restart
         </button>
-        {winner}
+
+        <span className='Winner'>{winner}</span>
+
+        <div className='GameSteps'>{gameSteps}</div>
       </div>
     </div>
   );
